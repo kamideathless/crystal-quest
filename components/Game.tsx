@@ -6,7 +6,7 @@ import { sdk } from '@farcaster/miniapp-sdk';
 import styles from './Game.module.css';
 
 const GRID_SIZE = 8;
-const CRYSTAL_TYPES = ['🔴', '🟠', '🟡', '🟢', '🔵', '🟣'];
+const CRYSTAL_TYPES = ['🔶', '🔷', '🟨', '🟩', '🟥', '🟪'];
 const INITIAL_MOVES = 15;
 const POINTS_PER_MATCH = 10;
 
@@ -200,8 +200,11 @@ export default function Game() {
   };
 
   const swapCells = (r1: number, c1: number, r2: number, c2: number) => {
-    // Сначала проверяем будет ли валидный матч
-    const testGrid = gameState.grid.map(row => [...row]);
+    // Сохраняем текущий grid для использования в замыканиях
+    const originalGrid = gameState.grid.map(row => [...row]);
+    
+    // Создаем тестовый grid для проверки матча
+    const testGrid = originalGrid.map(row => [...row]);
     const temp = testGrid[r1][c1];
     testGrid[r1][c1] = testGrid[r2][c2];
     testGrid[r2][c2] = temp;
@@ -209,7 +212,6 @@ export default function Game() {
 
     if (matches.length > 0) {
       // ✅ ВАЛИДНЫЙ ХОД
-      // Анимация перемещения вперед
       const swappingForward = new Map<string, { fromRow: number; fromCol: number; toRow: number; toCol: number }>();
       swappingForward.set(`${r1},${c1}`, { fromRow: r1, fromCol: c1, toRow: r2, toCol: c2 });
       swappingForward.set(`${r2},${c2}`, { fromRow: r2, fromCol: c2, toRow: r1, toCol: c1 });
@@ -219,7 +221,6 @@ export default function Game() {
         swappingCells: swappingForward,
       }));
 
-      // После анимации применяем своп
       setTimeout(() => {
         setGameState(prev => ({ 
           ...prev, 
@@ -238,23 +239,24 @@ export default function Game() {
       // ❌ НЕВАЛИДНЫЙ ХОД
       // Анимация туда-обратно БЕЗ изменения grid
       
-      // Шаг 1: Анимация вперед
       const swappingForward = new Map<string, { fromRow: number; fromCol: number; toRow: number; toCol: number }>();
       swappingForward.set(`${r1},${c1}`, { fromRow: r1, fromCol: c1, toRow: r2, toCol: c2 });
       swappingForward.set(`${r2},${c2}`, { fromRow: r2, fromCol: c2, toRow: r1, toCol: c1 });
       
       setGameState(prev => ({ ...prev, swappingCells: swappingForward }));
       
-      // Шаг 2: После анимации вперед - сразу начинаем анимацию назад
       setTimeout(() => {
+        // Анимация назад - grid остается originalGrid
         const swappingBack = new Map<string, { fromRow: number; fromCol: number; toRow: number; toCol: number }>();
-        // Анимируем возврат: из "конечных" позиций обратно
         swappingBack.set(`${r1},${c1}`, { fromRow: r2, fromCol: c2, toRow: r1, toCol: c1 });
         swappingBack.set(`${r2},${c2}`, { fromRow: r1, fromCol: c1, toRow: r2, toCol: c2 });
         
-        setGameState(prev => ({ ...prev, swappingCells: swappingBack }));
+        setGameState(prev => ({ 
+          ...prev, 
+          grid: originalGrid, // Явно устанавливаем исходный grid
+          swappingCells: swappingBack 
+        }));
         
-        // Шаг 3: После анимации назад - убираем анимацию
         setTimeout(() => {
           setGameState(prev => ({ ...prev, swappingCells: new Map() }));
         }, 400);
