@@ -27,6 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [`${URL}/og-image.png`],
     },
     other: {
+      'base:app_id': '696ffed96f24b67cce6d3209',
       'fc:miniapp': JSON.stringify({
         version: 'next',
         imageUrl: `${URL}/embed-image.png`,
