@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Crystal Quest - Match 3 on Base',
     description: 'Play the most addictive match-3 game on Base blockchain!',
     other: {
-      'base:app_id': '696ffed96f24b67cce6d3209',
+      'base:app_id': '696ffee95f24b57cc50d3209',
       'fc:miniapp': JSON.stringify({
         version: 'next',
         imageUrl: `${URL}/embed-image.png`,
