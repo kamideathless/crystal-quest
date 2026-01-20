@@ -6,7 +6,7 @@ import { sdk } from '@farcaster/miniapp-sdk';
 import styles from './Game.module.css';
 
 const GRID_SIZE = 8;
-const CRYSTAL_TYPES = ['💎', '⭐', '🔮', '💫', '🍀', '🌙'];
+const CRYSTAL_TYPES = ['🔴', '🟠', '🟡', '🟢', '🔵', '🟣'];
 const INITIAL_MOVES = 15;
 const POINTS_PER_MATCH = 10;
 
@@ -207,20 +207,20 @@ export default function Game() {
     testGrid[r2][c2] = temp;
     const matches = checkMatches(testGrid);
 
-    // Фаза 1: Анимация перемещения ВПЕРЕД
-    const swappingForward = new Map<string, { fromRow: number; fromCol: number; toRow: number; toCol: number }>();
-    swappingForward.set(`${r1},${c1}`, { fromRow: r1, fromCol: c1, toRow: r2, toCol: c2 });
-    swappingForward.set(`${r2},${c2}`, { fromRow: r2, fromCol: c2, toRow: r1, toCol: c1 });
+    if (matches.length > 0) {
+      // ✅ ВАЛИДНЫЙ ХОД
+      // Анимация перемещения вперед
+      const swappingForward = new Map<string, { fromRow: number; fromCol: number; toRow: number; toCol: number }>();
+      swappingForward.set(`${r1},${c1}`, { fromRow: r1, fromCol: c1, toRow: r2, toCol: c2 });
+      swappingForward.set(`${r2},${c2}`, { fromRow: r2, fromCol: c2, toRow: r1, toCol: c1 });
 
-    setGameState(prev => ({ 
-      ...prev, 
-      swappingCells: swappingForward,
-    }));
+      setGameState(prev => ({ 
+        ...prev, 
+        swappingCells: swappingForward,
+      }));
 
-    // После анимации вперед
-    setTimeout(() => {
-      if (matches.length > 0) {
-        // ✅ ВАЛИДНЫЙ ХОД - применяем своп
+      // После анимации применяем своп
+      setTimeout(() => {
         setGameState(prev => ({ 
           ...prev, 
           grid: testGrid,
@@ -232,36 +232,34 @@ export default function Game() {
         setTimeout(() => {
           processMatches(testGrid, matches);
         }, 50);
+      }, 400);
+      
+    } else {
+      // ❌ НЕВАЛИДНЫЙ ХОД
+      // Анимация туда-обратно БЕЗ изменения grid
+      
+      // Шаг 1: Анимация вперед
+      const swappingForward = new Map<string, { fromRow: number; fromCol: number; toRow: number; toCol: number }>();
+      swappingForward.set(`${r1},${c1}`, { fromRow: r1, fromCol: c1, toRow: r2, toCol: c2 });
+      swappingForward.set(`${r2},${c2}`, { fromRow: r2, fromCol: c2, toRow: r1, toCol: c1 });
+      
+      setGameState(prev => ({ ...prev, swappingCells: swappingForward }));
+      
+      // Шаг 2: После анимации вперед - сразу начинаем анимацию назад
+      setTimeout(() => {
+        const swappingBack = new Map<string, { fromRow: number; fromCol: number; toRow: number; toCol: number }>();
+        // Анимируем возврат: из "конечных" позиций обратно
+        swappingBack.set(`${r1},${c1}`, { fromRow: r2, fromCol: c2, toRow: r1, toCol: c1 });
+        swappingBack.set(`${r2},${c2}`, { fromRow: r1, fromCol: c1, toRow: r2, toCol: c2 });
         
-      } else {
-        // ❌ НЕВАЛИДНЫЙ ХОД
-        // Сначала применяем своп в grid (чтобы фигуры были на "новых" позициях)
-        setGameState(prev => ({ 
-          ...prev, 
-          grid: testGrid,
-          swappingCells: new Map()
-        }));
+        setGameState(prev => ({ ...prev, swappingCells: swappingBack }));
         
-        // Небольшая пауза, затем анимация возврата
+        // Шаг 3: После анимации назад - убираем анимацию
         setTimeout(() => {
-          // Теперь анимируем возврат
-          const swappingBack = new Map<string, { fromRow: number; fromCol: number; toRow: number; toCol: number }>();
-          swappingBack.set(`${r1},${c1}`, { fromRow: r2, fromCol: c2, toRow: r1, toCol: c1 });
-          swappingBack.set(`${r2},${c2}`, { fromRow: r1, fromCol: c1, toRow: r2, toCol: c2 });
-          
-          setGameState(prev => ({ ...prev, swappingCells: swappingBack }));
-          
-          // После анимации возврата - возвращаем исходный grid
-          setTimeout(() => {
-            setGameState(prev => ({ 
-              ...prev, 
-              grid: gameState.grid, // Возвращаем исходный grid
-              swappingCells: new Map() 
-            }));
-          }, 400);
-        }, 50);
-      }
-    }, 400);
+          setGameState(prev => ({ ...prev, swappingCells: new Map() }));
+        }, 400);
+      }, 400);
+    }
   };
 
   const processMatches = (grid: Grid, matches: Array<{ row: number; col: number; type: string; length: number }>) => {
