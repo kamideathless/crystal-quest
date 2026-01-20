@@ -16,7 +16,7 @@ const spaceMono = Space_Mono({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const URL = process.env.NEXT_PUBLIC_URL || 'https://crystalquestonbase.vercel.app';
+  const URL = process.env.NEXT_PUBLIC_URL || 'https://crystal-quest-eight.vercel.app/';
   
   return {
     title: 'Crystal Quest - Match 3 on Base',
