@@ -26,10 +26,10 @@ export async function GET() {
         `${URL}/screenshot3.png`
       ],
       "primaryCategory": "games",
-      "tags": ["match3", "puzzle", "gaming", "blockchain", "base", "web3"],
+      "tags": ["match3", "puzzle", "gaming", "base", "web3"],
       "heroImageUrl": `${URL}/hero.png`,
       "tagline": "Match. Score. Win on Base.",
-      "ogTitle": "Crystal Quest - Match 3 on Base",
+      "ogTitle": "Crystal Quest Match 3 Game",
       "ogDescription": "Play the most addictive match-3 game on Base blockchain. Build combos and compete for rewards!",
       "ogImageUrl": `${URL}/og-image.png`,
       "noindex": false
