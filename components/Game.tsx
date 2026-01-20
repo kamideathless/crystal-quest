@@ -6,8 +6,8 @@ import { sdk } from '@farcaster/miniapp-sdk';
 import styles from './Game.module.css';
 
 const GRID_SIZE = 8;
-const CRYSTAL_TYPES = ['💎', '💠', '🔷', '🔹', '💜', '💙'];
-const INITIAL_MOVES = 30;
+const CRYSTAL_TYPES = ['💎', '⭐', '🔶', '💠', '💜', '🔷'];
+const INITIAL_MOVES = 15;
 const POINTS_PER_MATCH = 10;
 
 type Cell = string | null;
