@@ -16,16 +16,11 @@ const spaceMono = Space_Mono({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const URL = process.env.NEXT_PUBLIC_URL || 'https://your-domain.vercel.app';
+  const URL = process.env.NEXT_PUBLIC_URL || 'https://crystalquestonbase.vercel.app';
   
   return {
     title: 'Crystal Quest - Match 3 on Base',
-    description: 'Play the most addictive match-3 game on Base blockchain. Build combos and compete for rewards!',
-    openGraph: {
-      title: 'Crystal Quest - Match 3 on Base',
-      description: 'Play the most addictive match-3 game on Base blockchain!',
-      images: [`${URL}/og-image.png`],
-    },
+    description: 'Play the most addictive match-3 game on Base blockchain!',
     other: {
       'base:app_id': '696ffed96f24b67cce6d3209',
       'fc:miniapp': JSON.stringify({
