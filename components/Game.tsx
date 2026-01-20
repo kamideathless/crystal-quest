@@ -236,31 +236,23 @@ export default function Game() {
       }, 400);
       
     } else {
-      // ❌ НЕВАЛИДНЫЙ ХОД
-      // Анимация туда-обратно БЕЗ изменения grid
+      // ❌ НЕВАЛИДНЫЙ ХОД - shake эффект, фигуры НЕ двигаются
+      const shakingCells = new Set<string>();
+      shakingCells.add(`${r1},${c1}`);
+      shakingCells.add(`${r2},${c2}`);
       
-      const swappingForward = new Map<string, { fromRow: number; fromCol: number; toRow: number; toCol: number }>();
-      swappingForward.set(`${r1},${c1}`, { fromRow: r1, fromCol: c1, toRow: r2, toCol: c2 });
-      swappingForward.set(`${r2},${c2}`, { fromRow: r2, fromCol: c2, toRow: r1, toCol: c1 });
+      setGameState(prev => ({ 
+        ...prev, 
+        animatingCells: shakingCells 
+      }));
       
-      setGameState(prev => ({ ...prev, swappingCells: swappingForward }));
-      
+      // Убираем shake после анимации
       setTimeout(() => {
-        // Анимация назад - grid остается originalGrid
-        const swappingBack = new Map<string, { fromRow: number; fromCol: number; toRow: number; toCol: number }>();
-        swappingBack.set(`${r1},${c1}`, { fromRow: r2, fromCol: c2, toRow: r1, toCol: c1 });
-        swappingBack.set(`${r2},${c2}`, { fromRow: r1, fromCol: c1, toRow: r2, toCol: c2 });
-        
         setGameState(prev => ({ 
           ...prev, 
-          grid: originalGrid, // Явно устанавливаем исходный grid
-          swappingCells: swappingBack 
+          animatingCells: new Set() 
         }));
-        
-        setTimeout(() => {
-          setGameState(prev => ({ ...prev, swappingCells: new Map() }));
-        }, 400);
-      }, 400);
+      }, 500);
     }
   };
 
