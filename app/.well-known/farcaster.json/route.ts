@@ -6,9 +6,9 @@ export async function GET() {
   return Response.json({
     "accountAssociation": {
       // Эти поля будут заполнены после создания на https://www.base.dev/preview?tab=account
-      "header": "",
-      "payload": "",
-      "signature": ""
+      "header": "eyJmaWQiOjIzODg2NTcsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg5RGNENTQ4MTdlMjllZjU1QzA0ZjY3NGU0NTU2MzQ1NjAwOTUzNDAzIn0",
+      "payload": "eyJkb21haW4iOiJjcnlzdGFsLXF1ZXN0LWVpZ2h0LnZlcmNlbC5hcHAifQ",
+      "signature": "bgFb0ney+4bTO0zjUe1VQyyvFbbmc72ybgvA7904LO4T4e4C6jX+eGxB7rlw8gheZJWZSpgliYSteDXYBi8jtRs="
     },
     "miniapp": {
       "version": "1",
