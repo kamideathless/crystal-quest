@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 
@@ -36,8 +39,14 @@ function parseZrangeWithScores(result: any): { nickname: string; score: number }
 
 export async function GET() {
   const raw = await kv.zrange(KEY, 0, 19, { rev: true, withScores: true });
-  return NextResponse.json({ rows: parseZrangeWithScores(raw) });
+  const rows = parseZrangeWithScores(raw);
+
+  return NextResponse.json(
+    { rows },
+    { headers: { "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate" } }
+  );
 }
+
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
